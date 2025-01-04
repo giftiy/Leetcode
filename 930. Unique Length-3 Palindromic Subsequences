@@ -1,0 +1,23 @@
+class Solution:
+    def countPalindromicSubsequence(self, s: str) -> int:
+        unique_palindromes = set()
+        n = len(s)
+
+        # Store the indices of each character
+        char_indices = {}
+        for i, char in enumerate(s):
+            if char not in char_indices:
+                char_indices[char] = [i]
+            else:
+                char_indices[char].append(i)
+
+        # Check for palindromic subsequences
+        for char, indices in char_indices.items():
+            if len(indices) >= 2:
+                # If there are at least two occurrences of 'char'
+                # Check characters between the first and last occurrence
+                unique_chars = set(s[indices[0]+1:indices[-1]])
+                for mid_char in unique_chars:
+                    unique_palindromes.add(char + mid_char + char)
+
+        return len(unique_palindromes)
