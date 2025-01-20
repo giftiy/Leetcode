@@ -1,0 +1,20 @@
+class Solution:
+    def firstCompleteIndex(self, arr: List[int], mat: List[List[int]]) -> int:
+        m, n = len(mat), len(mat[0])
+        row_paint_count = [0] * m
+        col_paint_count = [0] * n
+        cell_to_position = {}
+
+        for i in range(m):
+            for j in range(n):
+                cell_to_position[mat[i][j]] = (i, j)
+
+        for idx, value in enumerate(arr):
+            i, j = cell_to_position[value]
+            row_paint_count[i] += 1
+            col_paint_count[j] += 1
+
+            if row_paint_count[i] == n or col_paint_count[j] == m:
+                return idx
+
+        return -1
