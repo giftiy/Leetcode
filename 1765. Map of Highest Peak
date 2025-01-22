@@ -1,0 +1,29 @@
+class Solution:
+    def highestPeak(self, isWater: List[List[int]]) -> List[List[int]]:
+        m, n = len(isWater), len(isWater[0])
+        height = [[-1] * n for _ in range(m)]  # Initialize height matrix
+        queue = deque()
+
+        # Step 1: Initialize BFS queue with water cells
+        for i in range(m):
+            for j in range(n):
+                if isWater[i][j] == 1:
+                    height[i][j] = 0  # Water cells have height 0
+                    queue.append((i, j))
+
+        # Directions for adjacent cells (up, down, left, right)
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+        # Step 2: BFS to assign heights
+        while queue:
+            x, y = queue.popleft()
+            
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                
+                # Check bounds and if the cell is land and not assigned a height
+                if 0 <= nx < m and 0 <= ny < n and height[nx][ny] == -1:
+                    height[nx][ny] = height[x][y] + 1  # Assign height
+                    queue.append((nx, ny))  # Add to queue for further processing
+
+        return height
