@@ -1,0 +1,38 @@
+class Solution:
+    def largestIsland(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        island_size = {}
+        index = 2
+        
+        def dfs(r, c):
+            if r < 0 or r >= n or c < 0 or c >= n or grid[r][c] != 1:
+                return 0
+            grid[r][c] = index
+            size = 1
+            for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                size += dfs(r + dr, c + dc)
+            return size
+        
+        for i in range(n):
+            for j in range(n):
+                if grid[i][j] == 1:
+                    island_size[index] = dfs(i, j)
+                    index += 1
+        
+        max_size = max(island_size.values(), default=0)
+        
+        for i in range(n):
+            for j in range(n):
+                if grid[i][j] == 0:
+                    seen_islands = set()
+                    potential_size = 1
+                    for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                        ni, nj = i + dr, j + dc
+                        if 0 <= ni < n and 0 <= nj < n and grid[ni][nj] > 1:
+                            island_id = grid[ni][nj]
+                            if island_id not in seen_islands:
+                                seen_islands.add(island_id)
+                                potential_size += island_size[island_id]
+                    max_size = max(max_size, potential_size)
+        
+        return max_size
