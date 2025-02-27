@@ -1,0 +1,15 @@
+class Solution:
+    def lenLongestFibSubseq(self, arr: List[int]) -> int:
+        n = len(arr)
+        index = {x: i for i, x in enumerate(arr)}
+        max_length = 0
+        lengths = {}
+
+        for j in range(n):
+            for i in range(j):
+                k = arr[j] - arr[i]
+                if k in index and index[k] < i:
+                    lengths[(i, j)] = lengths.get((index[k], i), 2) + 1
+                    max_length = max(max_length, lengths[(i, j)])
+
+        return max_length if max_length >= 3 else 0
