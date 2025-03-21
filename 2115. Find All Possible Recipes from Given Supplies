@@ -1,0 +1,33 @@
+class Solution:
+    def findAllRecipes(self, recipes: List[str], ingredients: List[List[str]], supplies: List[str]) -> List[str]:
+        ingredient_map = {}
+        in_degree = defaultdict(int)
+        graph = defaultdict(list)
+        
+        for i in range(len(recipes)):
+            ingredient_map[recipes[i]] = ingredients[i]
+            in_degree[recipes[i]] = len(ingredients[i])
+            for ingredient in ingredients[i]:
+                graph[ingredient].append(recipes[i])
+
+        supply_set = set(supplies)
+        queue = deque()
+        
+        for supply in supplies:
+            queue.append(supply)
+
+        result = []
+
+        while queue:
+            current = queue.popleft()
+            for recipe in graph[current]:
+                in_degree[recipe] -= 1
+                if in_degree[recipe] == 0:
+                    result.append(recipe)
+                    queue.append(recipe)
+        
+        for recipe in recipes:
+            if in_degree[recipe] == 0 and recipe not in result:
+                result.append(recipe)
+
+        return result
