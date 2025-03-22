@@ -1,0 +1,36 @@
+class Solution:
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v)
+            graph[v].append(u)
+        
+        visited = [False] * n
+        complete_component_count = 0
+        
+        def dfs(node):
+            stack = [node]
+            comp_nodes = []
+            edge_count = 0
+            
+            while stack:
+                curr = stack.pop()
+                if not visited[curr]:
+                    visited[curr] = True
+                    comp_nodes.append(curr)
+                    for neighbor in graph[curr]:
+                        edge_count += 1
+                        if not visited[neighbor]:
+                            stack.append(neighbor)
+            
+            edge_count //= 2
+            return comp_nodes, edge_count
+        
+        for i in range(n):
+            if not visited[i]:
+                comp_nodes, edge_count = dfs(i)
+                k = len(comp_nodes)
+                if edge_count == (k * (k - 1)) // 2:
+                    complete_component_count += 1
+        
+        return complete_component_count
