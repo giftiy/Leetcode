@@ -1,0 +1,31 @@
+class Solution:
+    def countDays(self, days: int, meetings: List[List[int]]) -> int:
+        if not meetings:
+            return days
+        
+        meetings.sort()  # Sort by start time
+
+        merged_meetings = []
+        current_start, current_end = meetings[0]
+
+        for start, end in meetings[1:]:
+            if start <= current_end + 1:  # Check for overlap
+                current_end = max(current_end, end)
+            else:
+                merged_meetings.append((current_start, current_end))
+                current_start, current_end = start, end
+        
+        merged_meetings.append((current_start, current_end))
+        
+        free_days_count = 0
+        previous_end = 0
+
+        for start, end in merged_meetings:
+            if start > previous_end + 1:
+                free_days_count += (start - previous_end - 1)
+            previous_end = end
+        
+        if previous_end < days:
+            free_days_count += (days - previous_end)
+
+        return free_days_count
