@@ -1,0 +1,44 @@
+class Solution:
+    def checkValidCuts(self, n: int, rectangles: List[List[int]]) -> bool:
+        horizontal_cuts = set()
+        vertical_cuts = set()
+        
+        for startx, starty, endx, endy in rectangles:
+            horizontal_cuts.add(starty)
+            horizontal_cuts.add(endy)
+            vertical_cuts.add(startx)
+            vertical_cuts.add(endx)
+
+        horizontal_cuts = sorted(horizontal_cuts)
+        vertical_cuts = sorted(vertical_cuts)
+
+        if self.canCut(horizontal_cuts, rectangles, vertical=False):
+            return True
+            
+        if self.canCut(vertical_cuts, rectangles, vertical=True):
+            return True
+        
+        return False
+
+    def canCut(self, cuts: List[int], rectangles: List[List[int]], vertical: bool) -> bool:
+        from collections import defaultdict
+        
+        section_count = defaultdict(int)
+        
+        for startx, starty, endx, endy in rectangles:
+            if vertical:
+                section_count[self.get_section(cuts, startx)] += 1
+                section_count[self.get_section(cuts, endx)] += 1
+            else:
+                section_count[self.get_section(cuts, starty)] += 1
+                section_count[self.get_section(cuts, endy)] += 1
+
+        valid_sections = sum(1 for count in section_count.values() if count > 0)
+        
+        return valid_sections >= 3
+
+    def get_section(self, cuts: List[int], coordinate: int) -> int:
+        for i in range(len(cuts) - 1):
+            if cuts[i] <= coordinate < cuts[i + 1]: 
+                return i
+        return -1
