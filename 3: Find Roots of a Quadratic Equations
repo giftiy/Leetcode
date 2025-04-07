@@ -1,0 +1,21 @@
+import math
+
+a = float(input("Enter coefficient a: "))
+b = float(input("Enter coefficient b: "))
+c = float(input("Enter coefficient c: "))
+
+
+D = b**2 - 4*a*c
+
+if D >= 0:
+    x1 = (-b + math.sqrt(D)) / (2*a)
+    x2 = (-b - math.sqrt(D)) / (2*a)
+    print("Roots are real and different.")
+    print("x1 =", x1)
+    print("x2 =", x2)
+else:
+    rp = -b / (2*a)
+    ip = math.sqrt(-D) / (2*a)
+    print("Roots are complex and imaginary.")
+    print(f"x1 = {rp} + {ip}j")
+    print(f"x2 = {rp} - {ip}j")
