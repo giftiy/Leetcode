@@ -1,0 +1,21 @@
+class Solution:
+    def possibleStringCount(self, word: str) -> int:
+        n = len(word)
+        groups = []
+        i = 0
+
+        # Group consecutive characters
+        while i < n:
+            j = i
+            while j < n and word[j] == word[i]:
+                j += 1
+            groups.append(j - i)
+            i = j
+
+        # Start with 1 (original word)
+        result = 1
+        for count in groups:
+            if count > 1:
+                result += count - 1  # We can reduce it by 1, 2, ..., up to count-1
+
+        return result
