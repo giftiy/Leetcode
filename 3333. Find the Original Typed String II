@@ -1,0 +1,29 @@
+class Solution:
+    def possibleStringCount(self, word: str, k: int) -> int:
+        MOD = 10**9 + 7
+
+        rle = []
+        i = 0
+        n = len(word)
+        while i < n:
+            j = i
+            while j < n and word[j] == word[i]:
+                j += 1
+            rle.append(j - i)
+            i = j
+
+        total_len = sum(rle)
+        res = 0
+
+        if total_len >= k:
+            res += 1
+
+        for i in range(len(rle)):
+            if rle[i] <= 1:
+                continue
+            for reduced in range(1, rle[i]):
+                new_len = total_len - (rle[i] - reduced)
+                if new_len >= k:
+                    res += 1
+
+        return res % MOD
