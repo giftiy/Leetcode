@@ -1,0 +1,26 @@
+class Solution:
+    def maxEvents(self, events: List[List[int]]) -> int:
+        events.sort()
+        min_heap = []
+        day = 0
+        event_index = 0
+        attended = 0
+        n = len(events)
+
+        while event_index < n or min_heap:
+            if not min_heap:
+                day = events[event_index][0]
+
+            while event_index < n and events[event_index][0] <= day:
+                heapq.heappush(min_heap, events[event_index][1])
+                event_index += 1
+
+            while min_heap and min_heap[0] < day:
+                heapq.heappop(min_heap)
+
+            if min_heap:
+                heapq.heappop(min_heap)
+                attended += 1
+                day += 1
+
+        return attended   
