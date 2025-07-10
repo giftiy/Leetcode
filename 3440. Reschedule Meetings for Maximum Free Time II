@@ -1,0 +1,39 @@
+class Solution:
+    def maxFreeTime(self, eventTime: int, startTime: List[int], endTime: List[int]) -> int:
+        meetings = sorted(zip(startTime, endTime))
+        n = len(meetings)
+
+        def get_max_gap(intervals):
+            max_gap = 0
+            if intervals[0][0] > 0:
+                max_gap = intervals[0][0]
+            for i in range(1, len(intervals)):
+                max_gap = max(max_gap, intervals[i][0] - intervals[i - 1][1])
+            max_gap = max(max_gap, eventTime - intervals[-1][1])
+            return max_gap
+
+        original_max_gap = get_max_gap(meetings)
+        result = original_max_gap
+
+        for i in range(n):
+            dur = meetings[i][1] - meetings[i][0]
+            new_meetings = meetings[:i] + meetings[i+1:]
+            gaps = []
+
+            if new_meetings[0][0] >= dur:
+                gaps.append((0, new_meetings[0][0]))
+            for j in range(1, len(new_meetings)):
+                gap = new_meetings[j][0] - new_meetings[j - 1][1]
+                if gap >= dur:
+                    gaps.append((new_meetings[j - 1][1], new_meetings[j][0]))
+            if eventTime - new_meetings[-1][1] >= dur:
+                gaps.append((new_meetings[-1][1], eventTime))
+
+            for s, e in gaps:
+                new_start = s
+                new_end = s + dur
+                rescheduled = new_meetings + [(new_start, new_end)]
+                rescheduled.sort()
+                result = max(result, get_max_gap(rescheduled))
+
+        return result
