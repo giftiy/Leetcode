@@ -1,0 +1,23 @@
+class Solution:
+    def minCost(self, basket1: List[int], basket2: List[int]) -> int:
+        count = Counter()
+        for fruit in basket1:
+            count[fruit] += 1
+        for fruit in basket2:
+            count[fruit] -= 1
+
+        for v in count.values():
+            if v % 2 != 0:
+                return -1
+
+        to_move = []
+        for fruit, freq in count.items():
+            if freq > 0:
+                to_move.extend([fruit] * (freq // 2))
+
+        to_move.sort()
+        min_fruit = min(min(basket1), min(basket2))
+        total_cost = 0
+        for i in range(len(to_move)):
+            total_cost += min(to_move[i], 2 * min_fruit)
+        return total_cost
