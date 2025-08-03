@@ -1,0 +1,25 @@
+class Solution:
+    def maxTotalFruits(self, fruits: List[List[int]], startPos: int, k: int) -> int:
+        n = len(fruits)
+        prefix = [0] * (n + 1)
+        for i in range(n):
+            prefix[i + 1] = prefix[i] + fruits[i][1]
+
+        def total(i, j):
+            return prefix[j + 1] - prefix[i]
+
+        positions = [fruits[i][0] for i in range(n)]
+        res = 0
+
+        # Try all windows [i...j] and use two strategies
+        for i in range(n):
+            for j in range(i, n):
+                left, right = fruits[i][0], fruits[j][0]
+                if right < startPos - k or left > startPos + k:
+                    continue
+                dist1 = abs(startPos - left) + (right - left)
+                dist2 = abs(startPos - right) + (right - left)
+                if min(dist1, dist2) <= k:
+                    res = max(res, total(i, j))
+
+        return res
