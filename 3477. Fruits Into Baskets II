@@ -1,0 +1,17 @@
+class Solution:
+    def numOfUnplacedFruits(self, fruits: List[int], baskets: List[int]) -> int:
+        n = len(fruits)
+        used = [False] * n  # To mark whether each basket has been used
+        unplaced_count = 0
+
+        for i in range(n):  # Go through each fruit
+            placed = False
+            for j in range(n):  # Try to place it in the leftmost valid basket
+                if not used[j] and baskets[j] >= fruits[i]:
+                    used[j] = True  # Mark basket as used
+                    placed = True
+                    break
+            if not placed:
+                unplaced_count += 1  # Could not place this fruit
+
+        return unplaced_count
