@@ -1,0 +1,41 @@
+class Solution:
+    def maxCollectedFruits(self, fruits: List[List[int]]) -> int:
+        n = len(fruits)
+        dp = defaultdict(int)
+
+        # Initial positions: step = 0, all children at their starting points
+        # (r1, r2, r3): r1 from (0,0), r2 from (0,n-1), r3 from (n-1,0)
+        dp[(0, 0, n - 1)] = fruits[0][0] + fruits[0][n - 1] + fruits[n - 1][0]
+
+        directions1 = [(1, 0), (0, 1), (1, 1)]     # moves for child 1
+        directions2 = [(1, -1), (1, 0), (1, 1)]    # moves for child 2
+        directions3 = [(-1, 1), (0, 1), (1, 1)]    # moves for child 3
+
+        for step in range(1, n):
+            new_dp = defaultdict(int)
+            for r1, r2, r3 in dp:
+                c1, c2, c3 = step - r1, (step - r2) + (n - 1 - step), step - (n - 1 - r3)
+                if not (0 <= c1 < n and 0 <= c2 < n and 0 <= c3 < n):
+                    continue
+                for dr1, dc1 in directions1:
+                    nr1, nc1 = r1 + dr1, c1 + dc1
+                    if not (0 <= nr1 < n and 0 <= nc1 < n):
+                        continue
+                    for dr2, dc2 in directions2:
+                        nr2, nc2 = r2 + dr2, c2 + dc2
+                        if not (0 <= nr2 < n and 0 <= nc2 < n):
+                            continue
+                        for dr3, dc3 in directions3:
+                            nr3, nc3 = r3 + dr3, c3 + dc3
+                            if not (0 <= nr3 < n and 0 <= nc3 < n):
+                                continue
+
+                            positions = {(nr1, nc1), (nr2, nc2), (nr3, nc3)}
+                            collected = sum(fruits[r][c] for r, c in positions)
+
+                            key = (nr1, nr2, nr3)
+                            new_dp[key] = max(new_dp[key], dp[(r1, r2, r3)] + collected)
+
+            dp = new_dp
+
+        return max(dp.values())
